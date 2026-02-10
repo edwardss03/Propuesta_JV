@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💕 Una pregunta importante...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0, #f48fb1);
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ─── Corazones flotantes de fondo ─── */
+        .hearts-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .heart-float {
+            position: absolute;
+            opacity: 0;
+            animation: floatHeart linear infinite;
+            color: #e91e63;
+        }
+        @keyframes floatHeart {
+            0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10%  { opacity: 0.5; }
+            90%  { opacity: 0.5; }
+            100% { transform: translateY(-120px) rotate(360deg); opacity: 0; }
+        }
+
+        /* ─── Contenedor principal ─── */
+        .container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            background: rgba(255,255,255,0.88);
+            border-radius: 30px;
+            padding: 42px 38px 48px;
+            box-shadow: 0 10px 40px rgba(233,30,99,0.22);
+            max-width: 460px;
+            width: 90%;
+            animation: fadeInDown 0.7s ease;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-28px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── Zona del GIF del gatito ─── */
+        .gif-zone {
+            width: 250px;
+            height: 280px;
+            margin: 0 auto 26px;
+            border-radius: 18px;
+            border: 5px solid #f48fb1;
+            overflow: hidden;
+            background: #fce4ec;
+            box-shadow: 0 4px 18px rgba(233,30,99,0.18);
+        }
+        .gif-zone img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .gif-placeholder {
+            font-size: 3.8rem;
+            animation: bounceCat 1s ease-in-out infinite;
+        }
+        @keyframes bounceCat {
+            0%,100% { transform: translateY(0); }
+            50%     { transform: translateY(-10px); }
+        }
+
+        /* ─── Texto de la pregunta ─── */
+        .question {
+            font-size: 1.8rem;
+            color: #ad1457;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        /* ─── Botones ─── */
+        .buttons {
+            display: flex;
+            gap: 22px;
+            justify-content: center;
+        }
+        .btn {
+            padding: 14px 36px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Botón SÍ */
+        .btn-si {
+            background: linear-gradient(135deg, #e91e63, #ec407a);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(233,30,99,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-si:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 24px rgba(233,30,99,0.55);
+        }
+        .btn-si:active { transform: scale(0.95); }
+
+        /* Botón NO */
+        .btn-no {
+            background: linear-gradient(135deg, #78909c, #90a4ae);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(120,144,156,0.35);
+            transition: transform 0.18s cubic-bezier(0.25,0.46,0.45,0.94),
+                        box-shadow 0.2s;
+            white-space: nowrap;
+        }
+
+        /* ─── PANTALLA DE CELEBRACIÓN ─── */
+        .celebration {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 50%, #ce93d8 100%);
+            z-index: 100;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            animation: celebFade 0.55s ease;
+        }
+        .celebration.active { display: flex; }
+        @keyframes celebFade {
+            from { opacity: 0; transform: scale(0.93); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        /* Corazón grande que aparece */
+        .big-heart {
+            font-size: 7.5rem;
+            animation: heartPop 0.55s cubic-bezier(0.175,0.885,0.32,1.275) forwards,
+                       heartPulse 1.3s ease-in-out 0.55s infinite;
+            margin-bottom: 16px;
+        }
+        @keyframes heartPop {
+            0%   { transform: scale(0); opacity: 0; }
+            60%  { transform: scale(1.3); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes heartPulse {
+            0%,100% { transform: scale(1); }
+            50%     { transform: scale(1.18); }
+        }
+
+        /* Zona GIF celebración */
+        .celeb-gif-zone {
+            width: 250px;
+            height: 250px;
+            border-radius: 22px;
+            overflow: hidden;
+            border: 5px solid #fff;
+            box-shadow: 0 8px 30px rgba(206,147,216,0.4);
+            margin-bottom: 20px;
+            background: #f3e5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .celeb-gif-zone img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .celeb-placeholder {
+            font-size: 4.5rem;
+            animation: bounceCat 0.7s ease-in-out infinite;
+        }
+
+        .celeb-text {
+            font-size: 2.1rem;
+            color: #6a1b9a;
+            font-weight: bold;
+        }
+
+        /* ─── Confetti ─── */
+        .confetti-piece {
+            position: fixed;
+            pointer-events: none;
+            z-index: 99;
+            animation: confettiFall linear forwards;
+        }
+        @keyframes confettiFall {
+            0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* ─── TikTok ─── */
+        .tiktok-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin-top: 24px;
+            text-decoration: none;
+            color: #222;
+            font-size: 0.82rem;
+            font-family: sans-serif;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .tiktok-link:hover { opacity: 1; }
+        .tiktok-icon { width: 18px; height: 18px; }
+
+        /* ─── Instrucciones visibles solo en código ─── */
+        /* Ver comentarios HTML dentro de .gif-zone y .celeb-gif-zone */
+    </style>
+</head>
+<body>
+
+<!-- Corazones flotantes -->
+<div class="hearts-bg" id="heartsBg"></div>
+
+<!-- Contenedor principal -->
+<div class="container" id="mainContainer">
+
+    <!-- ZONA GIF GATITO
+         Para añadir tu GIF, reemplaza el <div class="gif-placeholder"> por:
+         <img src="tu_gatito.gif" alt="gatito">
+         Si el archivo está en la misma carpeta, solo pon el nombre del archivo.
+    -->
+    <div class="gif-zone">
+        <img src="cute-cat.gif" alt="gatito">
+    </div>
+
+    <!-- Pregunta -->
+    <p class="question">¿Quieres ser mi San Valentín? 💕</p>
+
+    <!-- Botones -->
+    <div class="buttons">
+        <button class="btn btn-si" id="btnSi" onclick="celebrar()">Sí 💖</button>
+        <button class="btn btn-no" id="btnNo">No</button>
+    <!-- TikTok -->
+   
+</div>
+<a href="https://www.tiktok.com/@fnx.code" target="_blank" class="tiktok-link">
+        <svg class="tiktok-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.28 6.28 0 00-.79-.05 6.27 6.27 0 00-6.27 6.27 6.27 6.27 0 006.27 6.27 6.27 6.27 0 006.27-6.27V9.17a8.16 8.16 0 004.84 1.58V7.32a4.83 4.83 0 01-1-.63z"/>
+        </svg>
+        @fnx.code
+    </a>
+<div class="celebration" id="celebration">
+    <!-- Corazones flotantes en celebración -->
+    <div class="hearts-bg" id="heartsCeleb" style="z-index: 101;"></div>
+
+    <div class="big-heart" style="position:relative; z-index:102;">❤️</div>
+
+    <div class="celeb-gif-zone" style="position:relative; z-index:102;">
+        <img src="dancing-cats-cats.gif" alt="gatos bailando">
+    </div>
+
+    <p class="celeb-text" style="position:relative; z-index:102;">¡SIIII! 🥰✨</p>
+</div>
+
+<script>
+// ============================================================
+// 1. CORAZONES FLOTANTES DE FONDO
+// ============================================================
+(function() {
+    const bg = document.getElementById('heartsBg');
+    const symbols = ['♥','❤','💕','💗','💖'];
+    for (let i = 0; i < 20; i++) {
+        const h = document.createElement('div');
+        h.classList.add('heart-float');
+        h.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        h.style.left = (Math.random() * 100) + 'vw';
+        h.style.animationDuration = (5 + Math.random() * 7) + 's';
+        h.style.animationDelay   = (Math.random() * 6) + 's';
+        h.style.fontSize         = (1 + Math.random() * 2.2) + 'rem';
+        bg.appendChild(h);
+    }
+})();
+
+// ============================================================
+// 2. BOTÓN "NO" – se escapa cada vez que el ratón se acerca
+// ============================================================
+(function() {
+    const btn = document.getElementById('btnNo');
+    let intentos = 0;
+    // Posición acumulada del botón (offset desde su lugar original)
+    let posX = 0, posY = 0;
+
+    btn.addEventListener('mouseenter', function(e) {
+        intentos++;
+
+        const rect = btn.getBoundingClientRect();
+        const btnCX = rect.left + rect.width  / 2;
+        const btnCY = rect.top  + rect.height / 2;
+
+        // Vector del botón hacia afuera (opuesto al ratón)
+        let dx = btnCX - e.clientX;
+        let dy = btnCY - e.clientY;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        dx /= dist;
+        dy /= dist;
+
+        // Fuerza que crece con cada intento (se limita a 380px)
+        const fuerza = Math.min(100 + intentos * 40, 380);
+
+        posX += dx * fuerza;
+        posY += dy * fuerza;
+
+        // Evitar que salga de la pantalla
+        const winW = window.innerWidth;
+        const winH = window.innerHeight;
+
+        // Proyectar posición absoluta
+        // El botón original está en el centro del contenedor;
+        // calculamos dónde quedaría con el offset
+        const origRect = btn.getBoundingClientRect();
+        // Ya tiene transform aplicado, así que origRect refleja la posición actual.
+        // Necesitamos la posición SIN transform para calcular límites.
+        // Usamos un enfoque más simple: clamp la posición absoluta proyectada.
+
+        // Posición absoluta actual del botón (con transform)
+        const absLeft = origRect.left;
+        const absTop  = origRect.top;
+        const btnW    = origRect.width;
+        const btnH    = origRect.height;
+
+        // Proyectar nuevo movimiento
+        const newAbsLeft = absLeft + dx * fuerza;
+        const newAbsTop  = absTop  + dy * fuerza;
+
+        // Si sale de los bordes, ajustar
+        if (newAbsLeft < 8) {
+            posX -= (newAbsLeft - 8);
+        }
+        if (newAbsLeft + btnW > winW - 8) {
+            posX -= (newAbsLeft + btnW - (winW - 8));
+        }
+        if (newAbsTop < 8) {
+            posY -= (newAbsTop - 8);
+        }
+        if (newAbsTop + btnH > winH - 8) {
+            posY -= (newAbsTop + btnH - (winH - 8));
+        }
+
+        btn.style.transform = `translate(${posX}px, ${posY}px)`;
+
+        // Mensajes burlones según intentos
+        if (intentos === 4)  btn.textContent = '¡No me toquesss!';
+        if (intentos === 8)  btn.textContent = '🏃💨';
+        if (intentos === 13) btn.textContent = '¿En serio? 😂';
+        if (intentos === 18) btn.textContent = '¡Imposible!';
+    });
+})();
+
+// ============================================================
+// 3. CELEBRACIÓN al presionar "Sí"
+// ============================================================
+function celebrar() {
+    document.getElementById('celebration').classList.add('active');
+
+    // Confetti
+    const colores = ['#e91e63','#9c27b0','#ff5722','#ffeb3b','#00bcd4','#4caf50','#ff9800','#ffffff'];
+    for (let i = 0; i < 65; i++) {
+        setTimeout(() => {
+            const p = document.createElement('div');
+            p.classList.add('confetti-piece');
+            p.style.left            = (Math.random() * 100) + 'vw';
+            p.style.top             = '-20px';
+            p.style.background      = colores[Math.floor(Math.random() * colores.length)];
+            p.style.borderRadius    = Math.random() > 0.5 ? '50%' : '3px';
+            p.style.width           = (7 + Math.random() * 10) + 'px';
+            p.style.height          = (7 + Math.random() * 10) + 'px';
+            p.style.animationDuration = (2.2 + Math.random() * 2) + 's';
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 4800);
+        }, i * 45);
+    }
+
+    // Corazones flotantes en celebración
+    const heartsCeleb = document.getElementById('heartsCeleb');
+    const symbols = ['♥','❤','💕','💗','💖'];
+    for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+            const h = document.createElement('div');
+            h.classList.add('heart-float');
+            h.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            h.style.left = (Math.random() * 100) + 'vw';
+            h.style.animationDuration = (4 + Math.random() * 6) + 's';
+            h.style.animationDelay = '0s';
+            h.style.fontSize = (1.2 + Math.random() * 2.5) + 'rem';
+            heartsCeleb.appendChild(h);
+        }, i * 200);
+    }
+}
+</script>
+
+</body>
+</html>
